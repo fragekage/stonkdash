@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "Ticker": "AAPL",
+    "Beta": 1.21,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 24.1,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "MSFT",
+    "Beta": 1.03,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 32.78,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "GOOGL",
+    "Beta": 1.01,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 18.61,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "AMZN",
+    "Beta": 0,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 34.6,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "META",
+    "Beta": 1.27,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 28.15,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "NVDA",
+    "Beta": 2.12,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 35.9,
+    "Price to FCF": 0
+  },
+  {
+    "Ticker": "TSLA",
+    "Beta": 0,
+    "ROIC": 0,
+    "PEG Ratio": 0,
+    "Forward PE": 105.08,
+    "Price to FCF": 0
+  }
+]
