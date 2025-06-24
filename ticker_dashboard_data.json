@@ -4,12 +4,12 @@
     "Beta": 1.21,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 24.29,
+    "Forward PE": 24.26,
     "Price to FCF": 0
   },
   {
     "Ticker": "MSFT",
-    "Beta": 1.03,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 32.83,
@@ -20,7 +20,7 @@
     "Beta": 1.01,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 18.66,
+    "Forward PE": 18.63,
     "Price to FCF": 0
   },
   {
@@ -28,7 +28,7 @@
     "Beta": 1.33,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 34.73,
+    "Forward PE": 34.75,
     "Price to FCF": 0
   },
   {
@@ -36,7 +36,7 @@
     "Beta": 1.27,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 28.11,
+    "Forward PE": 28.1,
     "Price to FCF": 0
   },
   {
@@ -44,15 +44,15 @@
     "Beta": 2.12,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 35.79,
+    "Forward PE": 35.75,
     "Price to FCF": 0
   },
   {
     "Ticker": "TSLA",
-    "Beta": 2.46,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 105.75,
+    "Forward PE": 105.48,
     "Price to FCF": 0
   }
 ]
