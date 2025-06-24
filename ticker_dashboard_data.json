@@ -1,10 +1,10 @@
 [
   {
     "Ticker": "AAPL",
-    "Beta": 1.21,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 24.23,
+    "Forward PE": 24.17,
     "Price to FCF": 0
   },
   {
@@ -12,28 +12,28 @@
     "Beta": 1.03,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 32.83,
+    "Forward PE": 32.77,
     "Price to FCF": 0
   },
   {
     "Ticker": "GOOGL",
-    "Beta": 1.01,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 18.62,
+    "Forward PE": 18.64,
     "Price to FCF": 0
   },
   {
     "Ticker": "AMZN",
-    "Beta": 1.33,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 34.73,
+    "Forward PE": 34.76,
     "Price to FCF": 0
   },
   {
     "Ticker": "META",
-    "Beta": 1.27,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 28.1,
@@ -41,7 +41,7 @@
   },
   {
     "Ticker": "NVDA",
-    "Beta": 2.12,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 35.75,
@@ -52,7 +52,7 @@
     "Beta": 2.46,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 105.82,
+    "Forward PE": 105.76,
     "Price to FCF": 0
   }
 ]
