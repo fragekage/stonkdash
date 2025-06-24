@@ -9,7 +9,7 @@
   },
   {
     "Ticker": "MSFT",
-    "Beta": 0,
+    "Beta": 1.03,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 32.78,
@@ -41,7 +41,7 @@
   },
   {
     "Ticker": "NVDA",
-    "Beta": 2.12,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 35.9,
