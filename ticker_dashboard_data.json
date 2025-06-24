@@ -33,7 +33,7 @@
   },
   {
     "Ticker": "META",
-    "Beta": 1.27,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 27.61,
@@ -41,7 +41,7 @@
   },
   {
     "Ticker": "NVDA",
-    "Beta": 2.12,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 34.99,
