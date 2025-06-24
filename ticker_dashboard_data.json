@@ -12,7 +12,7 @@
     "Beta": 1.03,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 32.8,
+    "Forward PE": 32.84,
     "Price to FCF": 0
   },
   {
@@ -20,15 +20,15 @@
     "Beta": 1.01,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 18.69,
+    "Forward PE": 18.68,
     "Price to FCF": 0
   },
   {
     "Ticker": "AMZN",
-    "Beta": 0,
+    "Beta": 1.33,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 34.75,
+    "Forward PE": 34.78,
     "Price to FCF": 0
   },
   {
@@ -44,7 +44,7 @@
     "Beta": 2.12,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 35.74,
+    "Forward PE": 35.77,
     "Price to FCF": 0
   },
   {
@@ -52,7 +52,7 @@
     "Beta": 2.46,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 105.5,
+    "Forward PE": 105.89,
     "Price to FCF": 0
   }
 ]
