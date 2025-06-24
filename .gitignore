@@ -1,0 +1,4 @@
+# Exclude sensitive config files and Python cache
+.env
+__pycache__/
+*.pyc

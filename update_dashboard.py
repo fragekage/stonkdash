@@ -1,48 +1,82 @@
-import yfinance as yf
+# update_dashboard.py
+
+import os
 import json
-import subprocess
+import requests
+import numpy as np
 from datetime import datetime
+from dotenv import load_dotenv
+import yfinance as yf
 
-# 1. Define tickers to track
-tickers = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'NVDA', 'TSLA']
+# Load API key from .env or GitHub environment
+load_dotenv()
+TD_API_KEY = os.getenv("TD_API_KEY")
 
-# 2. Fetch data
-def fetch_data(tickers):
-    data = []
-    for ticker in tickers:
-        stock = yf.Ticker(ticker)
-        info = stock.info
-        entry = {
-            "Ticker": ticker,
-            "Beta": round(info.get("beta", 0), 2),
-            "ROIC": round(info.get("returnOnCapitalEmployed", 0), 2),
-            "PEG Ratio": round(info.get("pegRatio", 0), 2),
-            "Forward PE": round(info.get("forwardPE", 0), 2),
-            "Price to FCF": round(info.get("priceToFreeCashFlows", 0), 2)
-        }
-        data.append(entry)
-    return data
+TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
 
-# 3. Write to JSON file
-def write_json(data, filepath="ticker_dashboard_data.json"):
-    with open(filepath, "w") as f:
-        json.dump(data, f, indent=2)
+BASE_URL = "https://api.twelvedata.com"
 
-# 4. Git commit + push
-def git_commit_push(message):
-    subprocess.run(["git", "add", "ticker_dashboard_data.json"])
-    subprocess.run(["git", "commit", "-m", message])
-    subprocess.run(["git", "push"])
+# Helper to calculate 1Y return and volatility
+def get_1y_stats(ticker):
+    t = yf.Ticker(ticker)
+    hist = t.history(period="1y")
+    if hist.empty or len(hist) < 252:
+        return None, None
 
-# === Run everything ===
+    prices = hist['Close']
+    daily_returns = prices.pct_change().dropna()
+    volatility = np.std(daily_returns) * np.sqrt(252)
+    total_return = (prices[-1] - prices[0]) / prices[0]
+    return total_return, volatility
+
+# Fetch financial ratios from Twelve Data
+def fetch_twelve_data(symbol):
+    url = f"{BASE_URL}/fundamentals?symbol={symbol}&apikey={TD_API_KEY}"
+    r = requests.get(url)
+    if r.status_code != 200:
+        raise ValueError(f"Twelve Data error for {symbol}: {r.status_code}")
+    return r.json()
+
+# Fetch price from Twelve Data
+def fetch_price(symbol):
+    url = f"{BASE_URL}/price?symbol={symbol}&apikey={TD_API_KEY}"
+    r = requests.get(url)
+    if r.status_code != 200:
+        raise ValueError(f"Price fetch error for {symbol}: {r.status_code}")
+    return float(r.json().get("price"))
+
+# Main fetch function
+def fetch_data():
+    dashboard_data = []
+    for symbol in TICKERS:
+        try:
+            ratios = fetch_twelve_data(symbol)
+            price = fetch_price(symbol)
+            total_return, volatility = get_1y_stats(symbol)
+            sharpe = total_return / volatility if total_return and volatility else None
+
+            fundamentals = ratios.get("fundamentals", {})
+            row = {
+                "Ticker": symbol,
+                "Price": price,
+                "EPS": float(fundamentals.get("EPS", {}).get("value", None)),
+                "PE Ratio": float(fundamentals.get("PE_ratio", {}).get("value", None)),
+                "PEG Ratio": float(fundamentals.get("PEG_ratio", {}).get("value", None)),
+                "Forward PE": float(fundamentals.get("Forward_PE_ratio", {}).get("value", None)),
+                "Price to FCF": float(fundamentals.get("Price_to_Free_Cash_Flow", {}).get("value", None)),
+                "1Y Return": total_return,
+                "1Y Volatility": volatility,
+                "Approx Sharpe Ratio": sharpe
+            }
+            dashboard_data.append(row)
+        except Exception as e:
+            print(f"Error fetching {symbol}: {e}")
+
+    return dashboard_data
+
+# Save JSON
 if __name__ == "__main__":
-    print("Fetching data...")
-    data = fetch_data(tickers)
-    write_json(data)
-    print("Data written to ticker_dashboard_data.json")
-
-    commit_message = f"Auto-update data: {datetime.now().isoformat(timespec='minutes')}"
-    print("Committing and pushing...")
-    git_commit_push(commit_message)
-
-    print("✅ Dashboard data updated and pushed.")
+    data = fetch_data()
+    with open("ticker_dashboard_data.json", "w") as f:
+        json.dump(data, f, indent=2)
+    print("Dashboard data updated.")
