@@ -1,0 +1,33 @@
+name: Update Dashboard Data
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # every 10 minutes UTC
+  workflow_dispatch:       # allows manual run
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install yfinance
+
+      - name: Run update script
+        run: python update_dashboard.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ticker_dashboard_data.json
+          git commit -m "GitHub Actions update at $(date -u)" || echo "No changes to commit"
+          git push
