@@ -3,7 +3,10 @@ name: Update Dashboard Data
 on:
   schedule:
     - cron: '*/10 * * * *'  # every 10 minutes UTC
-  workflow_dispatch:       # allows manual run
+  workflow_dispatch:         # allow manual runs
+
+permissions:
+  contents: write  # ✅ allows committing and pushing changes back to GitHub
 
 jobs:
   update:
