@@ -1,10 +1,10 @@
 [
   {
     "Ticker": "AAPL",
-    "Beta": 1.21,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 24.46,
+    "Forward PE": 24.35,
     "Price to FCF": 0
   },
   {
@@ -12,7 +12,7 @@
     "Beta": 1.03,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 32.84,
+    "Forward PE": 32.81,
     "Price to FCF": 0
   },
   {
@@ -20,7 +20,7 @@
     "Beta": 1.01,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 18.74,
+    "Forward PE": 18.73,
     "Price to FCF": 0
   },
   {
@@ -28,7 +28,7 @@
     "Beta": 1.33,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 34.73,
+    "Forward PE": 34.76,
     "Price to FCF": 0
   },
   {
@@ -36,7 +36,7 @@
     "Beta": 1.27,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 27.93,
+    "Forward PE": 27.98,
     "Price to FCF": 0
   },
   {
@@ -44,7 +44,7 @@
     "Beta": 2.12,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 35.74,
+    "Forward PE": 35.71,
     "Price to FCF": 0
   },
   {
@@ -52,7 +52,7 @@
     "Beta": 2.46,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 105.57,
+    "Forward PE": 106.13,
     "Price to FCF": 0
   }
 ]
