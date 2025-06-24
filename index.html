@@ -43,7 +43,7 @@
 </head>
 <body>
   <h1>Stock Performance Dashboard</h1>
-  <table>
+  <table id="dashboard-table">
     <thead>
       <tr>
         <th>Ticker</th>
@@ -59,7 +59,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Insert rows from JSON manually or render via script in future -->
+      <!-- Data will be inserted here by JavaScript -->
     </tbody>
   </table>
 
@@ -75,5 +75,44 @@
     <p><strong>1Y Volatility:</strong> Annualized standard deviation of daily returns.</p>
     <p><strong>Approx Sharpe Ratio:</strong> Return divided by volatility. <code>Sharpe ≈ Return / Volatility</code></p>
   </div>
+
+  <script>
+    fetch("ticker_dashboard_data.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log("Successfully loaded dashboard data:", data);
+        populateDashboard(data);
+      })
+      .catch(error => {
+        console.error("Error fetching or parsing JSON data:", error);
+        const table = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 10;
+        cell.innerText = "⚠️ Failed to load stock data.";
+        cell.style.color = "red";
+      });
+
+    function populateDashboard(data) {
+      const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+
+      data.forEach(entry => {
+        const row = tableBody.insertRow();
+        [
+          "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
+          "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
+        ].forEach(key => {
+          const cell = row.insertCell();
+          const value = entry[key];
+          cell.textContent = (value !== null && value !== undefined) ? value : "–";
+        });
+      });
+    }
+  </script>
 </body>
 </html>
