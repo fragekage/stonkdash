@@ -9,10 +9,10 @@
   },
   {
     "Ticker": "MSFT",
-    "Beta": 0,
+    "Beta": 1.03,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 32.73,
+    "Forward PE": 32.76,
     "Price to FCF": 0
   },
   {
@@ -20,7 +20,7 @@
     "Beta": 1.01,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 18.66,
+    "Forward PE": 18.68,
     "Price to FCF": 0
   },
   {
@@ -28,23 +28,23 @@
     "Beta": 1.33,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 34.54,
+    "Forward PE": 34.57,
     "Price to FCF": 0
   },
   {
     "Ticker": "META",
-    "Beta": 0,
+    "Beta": 1.27,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 27.84,
+    "Forward PE": 27.9,
     "Price to FCF": 0
   },
   {
     "Ticker": "NVDA",
-    "Beta": 0,
+    "Beta": 2.12,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 35.71,
+    "Forward PE": 35.68,
     "Price to FCF": 0
   },
   {
@@ -52,7 +52,7 @@
     "Beta": 2.46,
     "ROIC": 0,
     "PEG Ratio": 0,
-    "Forward PE": 105.62,
+    "Forward PE": 105.86,
     "Price to FCF": 0
   }
 ]
