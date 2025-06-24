@@ -9,7 +9,7 @@
   },
   {
     "Ticker": "MSFT",
-    "Beta": 1.03,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 32.51,
@@ -33,7 +33,7 @@
   },
   {
     "Ticker": "META",
-    "Beta": 0,
+    "Beta": 1.27,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 27.61,
@@ -49,7 +49,7 @@
   },
   {
     "Ticker": "TSLA",
-    "Beta": 2.46,
+    "Beta": 0,
     "ROIC": 0,
     "PEG Ratio": 0,
     "Forward PE": 107.62,
