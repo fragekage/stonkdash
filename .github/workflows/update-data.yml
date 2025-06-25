@@ -2,7 +2,7 @@ name: Update Dashboard
 
 on:
   schedule:
-    - cron: "0 * * * *"  # Every hour at minute 0
+    - cron: "*/30 13-20 * * 1-5"  # Every 30 mins, Mon–Fri, 9 AM–4:59 PM ET (market hours)
   workflow_dispatch:
 
 jobs:
