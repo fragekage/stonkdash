@@ -2,7 +2,7 @@ name: Update Dashboard
 
 on:
   schedule:
-    - cron: "*/10 * * * *"  # Every 10 minutes
+    - cron: "0 * * * *"  # Every hour at minute 0
   workflow_dispatch:
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
 
     env:
       TD_API_KEY: ${{ secrets.TD_API_KEY }}
+      AV_API_KEY: ${{ secrets.AV_API_KEY }}
 
     steps:
       - name: Checkout repository

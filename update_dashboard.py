@@ -3,80 +3,89 @@
 import os
 import json
 import requests
-import numpy as np
-from datetime import datetime
 from dotenv import load_dotenv
-import yfinance as yf
 
-# Load API key from .env or GitHub environment
+# Load environment variables
 load_dotenv()
 TD_API_KEY = os.getenv("TD_API_KEY")
+AV_API_KEY = os.getenv("AV_API_KEY")
 
 TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
+BASE_TD_URL = "https://api.twelvedata.com"
+BASE_AV_URL = "https://www.alphavantage.co/query"
 
-BASE_URL = "https://api.twelvedata.com"
+def safe_float(val):
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return None
 
-# Helper to calculate 1Y return and volatility
-def get_1y_stats(ticker):
-    t = yf.Ticker(ticker)
-    hist = t.history(period="1y")
-    if hist.empty or len(hist) < 252:
-        return None, None
+def fetch_price_from_twelve(ticker):
+    try:
+        url = f"{BASE_TD_URL}/quote?symbol={ticker}&apikey={TD_API_KEY}"
+        r = requests.get(url)
+        r.raise_for_status()
+        data = r.json()
+        return safe_float(data.get("close"))  # Use "close" instead of missing "price"
+    except Exception as e:
+        print(f"Twelve Data price error for {ticker}: {e}")
+        return None
 
-    prices = hist['Close']
-    daily_returns = prices.pct_change().dropna()
-    volatility = np.std(daily_returns) * np.sqrt(252)
-    total_return = (prices[-1] - prices[0]) / prices[0]
-    return total_return, volatility
+def fetch_fundamentals_from_av(ticker):
+    try:
+        url = f"{BASE_AV_URL}?function=OVERVIEW&symbol={ticker}&apikey={AV_API_KEY}"
+        r = requests.get(url)
+        r.raise_for_status()
+        data = r.json()
 
-# Fetch financial ratios from Twelve Data
-def fetch_twelve_data(symbol):
-    url = f"{BASE_URL}/fundamentals?symbol={symbol}&apikey={TD_API_KEY}"
-    r = requests.get(url)
-    if r.status_code != 200:
-        raise ValueError(f"Twelve Data error for {symbol}: {r.status_code}")
-    return r.json()
+        if not data or "Symbol" not in data:
+            raise ValueError("No overview data returned")
 
-# Fetch price from Twelve Data
-def fetch_price(symbol):
-    url = f"{BASE_URL}/price?symbol={symbol}&apikey={TD_API_KEY}"
-    r = requests.get(url)
-    if r.status_code != 200:
-        raise ValueError(f"Price fetch error for {symbol}: {r.status_code}")
-    return float(r.json().get("price"))
+        return {
+            "EPS": safe_float(data.get("EPS")),
+            "PE Ratio": safe_float(data.get("PERatio")),
+            "PEG Ratio": safe_float(data.get("PEGRatio")),
+            "Forward PE": safe_float(data.get("ForwardPE")),
+        }
+    except Exception as e:
+        print(f"Alpha Vantage fundamentals error for {ticker}: {e}")
+        return {
+            "EPS": None,
+            "PE Ratio": None,
+            "PEG Ratio": None,
+            "Forward PE": None,
+        }
 
-# Main fetch function
 def fetch_data():
     dashboard_data = []
-    for symbol in TICKERS:
-        try:
-            ratios = fetch_twelve_data(symbol)
-            price = fetch_price(symbol)
-            total_return, volatility = get_1y_stats(symbol)
-            sharpe = total_return / volatility if total_return and volatility else None
 
-            fundamentals = ratios.get("fundamentals", {})
-            row = {
-                "Ticker": symbol,
-                "Price": price,
-                "EPS": float(fundamentals.get("EPS", {}).get("value", None)),
-                "PE Ratio": float(fundamentals.get("PE_ratio", {}).get("value", None)),
-                "PEG Ratio": float(fundamentals.get("PEG_ratio", {}).get("value", None)),
-                "Forward PE": float(fundamentals.get("Forward_PE_ratio", {}).get("value", None)),
-                "Price to FCF": float(fundamentals.get("Price_to_Free_Cash_Flow", {}).get("value", None)),
-                "1Y Return": total_return,
-                "1Y Volatility": volatility,
-                "Approx Sharpe Ratio": sharpe
-            }
-            dashboard_data.append(row)
-        except Exception as e:
-            print(f"Error fetching {symbol}: {e}")
+    for ticker in TICKERS:
+        print(f"Processing {ticker}...")
+        price = fetch_price_from_twelve(ticker)
+        fundamentals = fetch_fundamentals_from_av(ticker)
+
+        row = {
+            "Ticker": ticker,
+            "Price": price,
+            "EPS": fundamentals["EPS"],
+            "PE Ratio": fundamentals["PE Ratio"],
+            "PEG Ratio": fundamentals["PEG Ratio"],
+            "Forward PE": fundamentals["Forward PE"],
+            "Price to FCF": None,             # Not provided
+            "1Y Return": None,                # Temporarily omitted
+            "1Y Volatility": None,            # Temporarily omitted
+            "Approx Sharpe Ratio": None       # Temporarily omitted
+        }
+
+        dashboard_data.append(row)
 
     return dashboard_data
 
-# Save JSON
 if __name__ == "__main__":
     data = fetch_data()
-    with open("ticker_dashboard_data.json", "w") as f:
-        json.dump(data, f, indent=2)
-    print("Dashboard data updated.")
+    if data:
+        with open("ticker_dashboard_data.json", "w") as f:
+            json.dump(data, f, indent=2)
+        print("Dashboard data updated.")
+    else:
+        print("No data to write.")
