@@ -3,9 +3,30 @@
 import os
 import json
 import requests
+import sys
+from datetime import datetime
+import pytz
 from dotenv import load_dotenv
 
-# Load environment variables
+# ─── Step 1: Skip if Market is Closed ──────────────────────────────────────────
+
+def is_market_open():
+    eastern = pytz.timezone('US/Eastern')
+    now_et = datetime.now(eastern)
+    # Only run on weekdays
+    if now_et.weekday() >= 5:  # 5 = Saturday, 6 = Sunday
+        return False
+    # Only run between 9:30 AM and 4:00 PM ET
+    market_open = now_et.replace(hour=9, minute=30, second=0, microsecond=0)
+    market_close = now_et.replace(hour=16, minute=0, second=0, microsecond=0)
+    return market_open <= now_et <= market_close
+
+if not is_market_open():
+    print("Market is closed. Skipping update.")
+    sys.exit(0)
+
+# ─── Step 2: Load API Keys ─────────────────────────────────────────────────────
+
 load_dotenv()
 TD_API_KEY = os.getenv("TD_API_KEY")
 AV_API_KEY = os.getenv("AV_API_KEY")
@@ -14,11 +35,15 @@ TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
 BASE_TD_URL = "https://api.twelvedata.com"
 BASE_AV_URL = "https://www.alphavantage.co/query"
 
+# ─── Step 3: Utility ───────────────────────────────────────────────────────────
+
 def safe_float(val):
     try:
         return float(val)
     except (TypeError, ValueError):
         return None
+
+# ─── Step 4: Fetch Price ───────────────────────────────────────────────────────
 
 def fetch_price_from_twelve(ticker):
     try:
@@ -30,6 +55,8 @@ def fetch_price_from_twelve(ticker):
     except Exception as e:
         print(f"Twelve Data price error for {ticker}: {e}")
         return None
+
+# ─── Step 5: Fetch Fundamentals ────────────────────────────────────────────────
 
 def fetch_fundamentals_from_av(ticker):
     try:
@@ -56,6 +83,8 @@ def fetch_fundamentals_from_av(ticker):
             "Forward PE": None,
         }
 
+# ─── Step 6: Fetch All Data ────────────────────────────────────────────────────
+
 def fetch_data():
     dashboard_data = []
 
@@ -80,6 +109,8 @@ def fetch_data():
         dashboard_data.append(row)
 
     return dashboard_data
+
+# ─── Step 7: Save to File ──────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     data = fetch_data()
