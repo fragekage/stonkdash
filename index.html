@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Stock Dashboard</title>
   <style>
     body {
@@ -16,7 +16,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 2em;
+      margin-bottom: 1em;
     }
     th, td {
       border: 1px solid #ccc;
@@ -25,6 +25,13 @@
     }
     th {
       background-color: #eee;
+      cursor: pointer;
+    }
+    th.sorted-asc::after {
+      content: " 🔼";
+    }
+    th.sorted-desc::after {
+      content: " 🔽";
     }
     .definitions {
       font-size: 0.95em;
@@ -39,10 +46,17 @@
       padding: 0.1em 0.3em;
       border-radius: 3px;
     }
+    #last-updated {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 2em;
+    }
   </style>
 </head>
 <body>
   <h1>Stock Performance Dashboard</h1>
+  <div id="last-updated">Loading last update time...</div>
   <table id="dashboard-table">
     <thead>
       <tr>
@@ -58,9 +72,7 @@
         <th>Approx Sharpe Ratio</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Data will be inserted here by JavaScript -->
-    </tbody>
+    <tbody></tbody>
   </table>
 
   <div class="definitions">
@@ -77,29 +89,35 @@
   </div>
 
   <script>
-    fetch("ticker_dashboard_data.json?ts=" + Date.now())
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log("Successfully loaded dashboard data:", data);
-        populateDashboard(data);
-      })
-      .catch(error => {
-        console.error("Error fetching or parsing JSON data:", error);
-        const table = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
-        const row = table.insertRow();
-        const cell = row.insertCell();
-        cell.colSpan = 10;
-        cell.innerText = "⚠️ Failed to load stock data.";
-        cell.style.color = "red";
-      });
+    let dashboardData = [];
+    let currentSortColumn = null;
+    let currentSortDirection = "asc";
+
+    function formatValue(key, value) {
+      if (value === null || value === undefined || isNaN(value)) return "–";
+
+      switch (key) {
+        case "Price":
+        case "EPS":
+          return `$${value.toFixed(2)}`;
+        case "PE Ratio":
+        case "PEG Ratio":
+        case "Forward PE":
+        case "Price to FCF":
+        case "Approx Sharpe Ratio":
+          return value.toFixed(2);
+        case "1Y Return":
+        case "1Y Volatility":
+          const rounded = (value * 100).toFixed(1);
+          return `${value >= 0 ? "+" : ""}${rounded}%`;
+        default:
+          return value;
+      }
+    }
 
     function populateDashboard(data) {
       const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+      tableBody.innerHTML = "";
 
       data.forEach(entry => {
         const row = tableBody.insertRow();
@@ -108,16 +126,90 @@
           "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
         ].forEach(key => {
           const cell = row.insertCell();
-          const value = entry[key];
-          cell.textContent = (value !== null && value !== undefined) ? value : "–";
+          const rawValue = entry[key];
+          cell.textContent = formatValue(key, rawValue);
+          cell.setAttribute("data-raw", rawValue);  // for sorting
         });
       });
     }
 
-    // Full page reload every 5 minutes
+    function sortByColumn(columnIndex) {
+      const keys = [
+        "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
+        "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
+      ];
+      const key = keys[columnIndex];
+
+      if (currentSortColumn === columnIndex) {
+        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+      } else {
+        currentSortColumn = columnIndex;
+        currentSortDirection = "asc";
+      }
+
+      dashboardData.sort((a, b) => {
+        const valA = a[key];
+        const valB = b[key];
+
+        if (valA === null) return 1;
+        if (valB === null) return -1;
+
+        if (valA < valB) return currentSortDirection === "asc" ? -1 : 1;
+        if (valA > valB) return currentSortDirection === "asc" ? 1 : -1;
+        return 0;
+      });
+
+      updateSortIndicators(columnIndex);
+      populateDashboard(dashboardData);
+    }
+
+    function updateSortIndicators(columnIndex) {
+      const headers = document.querySelectorAll("thead th");
+      headers.forEach((th, i) => {
+        th.classList.remove("sorted-asc", "sorted-desc");
+        if (i === columnIndex) {
+          th.classList.add(currentSortDirection === "asc" ? "sorted-asc" : "sorted-desc");
+        }
+      });
+    }
+
+    function addSortHandlers() {
+      const headers = document.querySelectorAll("thead th");
+      headers.forEach((th, index) => {
+        th.addEventListener("click", () => sortByColumn(index));
+      });
+    }
+
+    function displayLastUpdated(dateStr) {
+      const el = document.getElementById("last-updated");
+      const d = new Date(dateStr);
+      el.textContent = `Last updated: ${d.toLocaleString()}`;
+    }
+
+    fetch("ticker_dashboard_data.json")
+      .then(response => {
+        if (!response.ok) throw new Error(`Failed to load JSON (${response.status})`);
+        displayLastUpdated(response.headers.get("Last-Modified"));
+        return response.json();
+      })
+      .then(data => {
+        dashboardData = data;
+        populateDashboard(data);
+        addSortHandlers();
+      })
+      .catch(error => {
+        console.error("Error loading data:", error);
+        const row = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0].insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 10;
+        cell.innerText = "⚠️ Failed to load stock data.";
+        cell.style.color = "red";
+      });
+
+    // Optional auto-refresh every 5 minutes
     setTimeout(() => {
       window.location.reload(true);
-    }, 300000); // 5 minutes = 300,000 ms
+    }, 300000);
   </script>
 </body>
 </html>
