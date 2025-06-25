@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stock Dashboard</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
+      font-family: monospace;
+      background-color: #000;
+      color: #fff;
       padding: 2em;
     }
     h1 {
       text-align: center;
+      color: #ffcc00;
+    }
+    #last-updated {
+      text-align: center;
+      font-size: 0.9em;
+      color: #ccc;
+      margin-bottom: 1em;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 1em;
+      margin-bottom: 2em;
     }
     th, td {
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       padding: 0.5em;
       text-align: center;
     }
     th {
-      background-color: #eee;
+      background-color: #111;
       cursor: pointer;
+      user-select: none;
     }
-    th.sorted-asc::after {
-      content: " 🔼";
+    th.sort-asc::after {
+      content: " \25B2";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
     }
-    th.sorted-desc::after {
-      content: " 🔽";
+    th.sort-desc::after {
+      content: " \25BC";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
+    }
+    td {
+      background-color: #111;
     }
     .definitions {
       font-size: 0.95em;
@@ -42,37 +58,37 @@
       margin: 0.5em 0;
     }
     .definitions code {
-      background: #f0f0f0;
+      background: #222;
       padding: 0.1em 0.3em;
       border-radius: 3px;
     }
-    #last-updated {
-      text-align: center;
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 2em;
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
     }
   </style>
 </head>
 <body>
   <h1>Stock Performance Dashboard</h1>
-  <div id="last-updated">Loading last update time...</div>
+  <div id="last-updated"></div>
   <table id="dashboard-table">
     <thead>
       <tr>
-        <th>Ticker</th>
-        <th>Price</th>
-        <th>EPS</th>
-        <th>PE Ratio</th>
-        <th>PEG Ratio</th>
-        <th>Forward PE</th>
-        <th>Price to FCF</th>
-        <th>1Y Return</th>
-        <th>1Y Volatility</th>
-        <th>Approx Sharpe Ratio</th>
+        <th data-col="Ticker">Ticker</th>
+        <th data-col="Price">Price</th>
+        <th data-col="EPS">EPS</th>
+        <th data-col="PE Ratio">PE Ratio</th>
+        <th data-col="PEG Ratio">PEG Ratio</th>
+        <th data-col="Forward PE">Forward PE</th>
+        <th data-col="Price to FCF">Price to FCF</th>
+        <th data-col="1Y Return">1Y Return</th>
+        <th data-col="1Y Volatility">1Y Volatility</th>
+        <th data-col="Approx Sharpe Ratio">Approx Sharpe Ratio</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody>
+    </tbody>
   </table>
 
   <div class="definitions">
@@ -89,34 +105,36 @@
   </div>
 
   <script>
-    let dashboardData = [];
-    let currentSortColumn = null;
-    let currentSortDirection = "asc";
-
-function formatValue(key, value) {
-  if (key === "Ticker") return value;
-
-  if (value === null || value === undefined || isNaN(value)) return "–";
-
-  switch (key) {
-    case "Price":
-    case "EPS":
-      return `$${value.toFixed(2)}`;
-    case "PE Ratio":
-    case "PEG Ratio":
-    case "Forward PE":
-    case "Price to FCF":
-    case "Approx Sharpe Ratio":
-      return value.toFixed(2);
-    case "1Y Return":
-    case "1Y Volatility":
-      const rounded = (value * 100).toFixed(1);
-      return `${value >= 0 ? "+" : ""}${rounded}%`;
-    default:
+    function formatValue(key, value) {
+      if (value === null || value === undefined) return "–";
+      if (["Price", "EPS"].includes(key)) return `$${value.toFixed(2)}`;
+      if (["PE Ratio", "PEG Ratio", "Forward PE"].includes(key)) return value.toFixed(2);
       return value;
-  }
-}
+    }
 
+    function updateTimestamp() {
+      const now = new Date();
+      document.getElementById("last-updated").textContent = `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+    }
+
+    fetch("ticker_dashboard_data.json")
+      .then(response => {
+        if (!response.ok) throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
+        return response.json();
+      })
+      .then(data => {
+        populateDashboard(data);
+        updateTimestamp();
+      })
+      .catch(error => {
+        console.error("Error fetching or parsing JSON data:", error);
+        const table = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 10;
+        cell.innerText = "⚠️ Failed to load stock data.";
+        cell.style.color = "red";
+      });
 
     function populateDashboard(data) {
       const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
@@ -129,87 +147,34 @@ function formatValue(key, value) {
           "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
         ].forEach(key => {
           const cell = row.insertCell();
-          const rawValue = entry[key];
-          cell.textContent = formatValue(key, rawValue);
-          cell.setAttribute("data-raw", rawValue);  // for sorting
+          cell.textContent = formatValue(key, entry[key]);
         });
       });
     }
 
-    function sortByColumn(columnIndex) {
-      const keys = [
-        "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
-        "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
-      ];
-      const key = keys[columnIndex];
+    document.querySelectorAll("th").forEach(th => {
+      th.addEventListener("click", () => {
+        const col = th.getAttribute("data-col");
+        const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+        const rows = Array.from(tableBody.rows);
+        const isAsc = !th.classList.contains("sort-asc");
 
-      if (currentSortColumn === columnIndex) {
-        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
-      } else {
-        currentSortColumn = columnIndex;
-        currentSortDirection = "asc";
-      }
+        document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
+        th.classList.add(isAsc ? "sort-asc" : "sort-desc");
 
-      dashboardData.sort((a, b) => {
-        const valA = a[key];
-        const valB = b[key];
+        rows.sort((a, b) => {
+          const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+          const valB = b.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+          const numA = parseFloat(valA);
+          const numB = parseFloat(valB);
+          return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
+        });
 
-        if (valA === null) return 1;
-        if (valB === null) return -1;
-
-        if (valA < valB) return currentSortDirection === "asc" ? -1 : 1;
-        if (valA > valB) return currentSortDirection === "asc" ? 1 : -1;
-        return 0;
+        rows.forEach(row => tableBody.appendChild(row));
       });
+    });
 
-      updateSortIndicators(columnIndex);
-      populateDashboard(dashboardData);
-    }
-
-    function updateSortIndicators(columnIndex) {
-      const headers = document.querySelectorAll("thead th");
-      headers.forEach((th, i) => {
-        th.classList.remove("sorted-asc", "sorted-desc");
-        if (i === columnIndex) {
-          th.classList.add(currentSortDirection === "asc" ? "sorted-asc" : "sorted-desc");
-        }
-      });
-    }
-
-    function addSortHandlers() {
-      const headers = document.querySelectorAll("thead th");
-      headers.forEach((th, index) => {
-        th.addEventListener("click", () => sortByColumn(index));
-      });
-    }
-
-    function displayLastUpdated(dateStr) {
-      const el = document.getElementById("last-updated");
-      const d = new Date(dateStr);
-      el.textContent = `Last updated: ${d.toLocaleString()}`;
-    }
-
-    fetch("ticker_dashboard_data.json")
-      .then(response => {
-        if (!response.ok) throw new Error(`Failed to load JSON (${response.status})`);
-        displayLastUpdated(response.headers.get("Last-Modified"));
-        return response.json();
-      })
-      .then(data => {
-        dashboardData = data;
-        populateDashboard(data);
-        addSortHandlers();
-      })
-      .catch(error => {
-        console.error("Error loading data:", error);
-        const row = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0].insertRow();
-        const cell = row.insertCell();
-        cell.colSpan = 10;
-        cell.innerText = "⚠️ Failed to load stock data.";
-        cell.style.color = "red";
-      });
-
-    // Optional auto-refresh every 5 minutes
+    // Auto-refresh every 5 minutes
     setTimeout(() => {
       window.location.reload(true);
     }, 300000);
