@@ -31,7 +31,7 @@ load_dotenv()
 TD_API_KEY = os.getenv("TD_API_KEY")
 AV_API_KEY = os.getenv("AV_API_KEY")
 
-TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA"]
+TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA", "TSLA","SPY","QQQ","MGC","IEFA","NEE","D","CRWV"]
 BASE_TD_URL = "https://api.twelvedata.com"
 BASE_AV_URL = "https://www.alphavantage.co/query"
 
