@@ -93,27 +93,30 @@
     let currentSortColumn = null;
     let currentSortDirection = "asc";
 
-    function formatValue(key, value) {
-      if (value === null || value === undefined || isNaN(value)) return "–";
+function formatValue(key, value) {
+  if (key === "Ticker") return value;
 
-      switch (key) {
-        case "Price":
-        case "EPS":
-          return `$${value.toFixed(2)}`;
-        case "PE Ratio":
-        case "PEG Ratio":
-        case "Forward PE":
-        case "Price to FCF":
-        case "Approx Sharpe Ratio":
-          return value.toFixed(2);
-        case "1Y Return":
-        case "1Y Volatility":
-          const rounded = (value * 100).toFixed(1);
-          return `${value >= 0 ? "+" : ""}${rounded}%`;
-        default:
-          return value;
-      }
-    }
+  if (value === null || value === undefined || isNaN(value)) return "–";
+
+  switch (key) {
+    case "Price":
+    case "EPS":
+      return `$${value.toFixed(2)}`;
+    case "PE Ratio":
+    case "PEG Ratio":
+    case "Forward PE":
+    case "Price to FCF":
+    case "Approx Sharpe Ratio":
+      return value.toFixed(2);
+    case "1Y Return":
+    case "1Y Volatility":
+      const rounded = (value * 100).toFixed(1);
+      return `${value >= 0 ? "+" : ""}${rounded}%`;
+    default:
+      return value;
+  }
+}
+
 
     function populateDashboard(data) {
       const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
