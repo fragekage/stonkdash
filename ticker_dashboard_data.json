@@ -1,7 +1,7 @@
 [
   {
     "Ticker": "AAPL",
-    "Price": 199.93,
+    "Price": 200.17,
     "EPS": 6.43,
     "PE Ratio": 31.35,
     "PEG Ratio": 1.83,
@@ -13,7 +13,7 @@
   },
   {
     "Ticker": "MSFT",
-    "Price": 495.41,
+    "Price": 493.305,
     "EPS": 12.95,
     "PE Ratio": 38.01,
     "PEG Ratio": 2.309,
@@ -25,7 +25,7 @@
   },
   {
     "Ticker": "GOOGL",
-    "Price": 171.25,
+    "Price": 171.82,
     "EPS": 8.96,
     "PE Ratio": 19.05,
     "PEG Ratio": 1.308,
@@ -37,7 +37,7 @@
   },
   {
     "Ticker": "AMZN",
-    "Price": 213.76,
+    "Price": 214.27,
     "EPS": 6.15,
     "PE Ratio": 34.47,
     "PEG Ratio": 2.737,
@@ -49,7 +49,7 @@
   },
   {
     "Ticker": "META",
-    "Price": 719.29,
+    "Price": 719.91,
     "EPS": 25.58,
     "PE Ratio": 27.7,
     "PEG Ratio": 2.344,
@@ -61,7 +61,7 @@
   },
   {
     "Ticker": "NVDA",
-    "Price": 156.31,
+    "Price": 155.58,
     "EPS": 3.1,
     "PE Ratio": 49.78,
     "PEG Ratio": 1.913,
@@ -73,7 +73,7 @@
   },
   {
     "Ticker": "TSLA",
-    "Price": 326.53,
+    "Price": 329.26,
     "EPS": 1.74,
     "PE Ratio": 188.25,
     "PEG Ratio": 6.29,
@@ -85,7 +85,7 @@
   },
   {
     "Ticker": "SPY",
-    "Price": 610.29,
+    "Price": 610.545,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -97,7 +97,7 @@
   },
   {
     "Ticker": "QQQ",
-    "Price": null,
+    "Price": 543.96,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -109,7 +109,7 @@
   },
   {
     "Ticker": "MGC",
-    "Price": null,
+    "Price": 222.55,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -121,7 +121,7 @@
   },
   {
     "Ticker": "IEFA",
-    "Price": null,
+    "Price": 82.42,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -133,7 +133,7 @@
   },
   {
     "Ticker": "NEE",
-    "Price": null,
+    "Price": 70.74,
     "EPS": 2.67,
     "PE Ratio": 26.34,
     "PEG Ratio": 2.662,
@@ -145,7 +145,7 @@
   },
   {
     "Ticker": "D",
-    "Price": null,
+    "Price": 55.03,
     "EPS": 2.59,
     "PE Ratio": 21.31,
     "PEG Ratio": 2.067,
@@ -157,7 +157,7 @@
   },
   {
     "Ticker": "CRWV",
-    "Price": null,
+    "Price": 165.545,
     "EPS": -2.53,
     "PE Ratio": null,
     "PEG Ratio": null,
