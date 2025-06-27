@@ -1,7 +1,7 @@
 [
   {
     "Ticker": "AAPL",
-    "Price": 200.98,
+    "Price": 201.19,
     "EPS": 6.41,
     "PE Ratio": 31.36,
     "PEG Ratio": 1.83,
@@ -13,7 +13,7 @@
   },
   {
     "Ticker": "MSFT",
-    "Price": 495.0,
+    "Price": 495.245,
     "EPS": 12.93,
     "PE Ratio": 38.47,
     "PEG Ratio": 2.309,
@@ -25,7 +25,7 @@
   },
   {
     "Ticker": "GOOGL",
-    "Price": 172.72,
+    "Price": 173.59,
     "EPS": 8.95,
     "PE Ratio": 19.39,
     "PEG Ratio": 1.308,
@@ -37,7 +37,7 @@
   },
   {
     "Ticker": "AMZN",
-    "Price": 218.085,
+    "Price": 220.43,
     "EPS": 6.14,
     "PE Ratio": 35.36,
     "PEG Ratio": 2.737,
@@ -49,7 +49,7 @@
   },
   {
     "Ticker": "META",
-    "Price": 728.16,
+    "Price": 729.58,
     "EPS": 25.56,
     "PE Ratio": 28.41,
     "PEG Ratio": 2.39,
@@ -61,7 +61,7 @@
   },
   {
     "Ticker": "NVDA",
-    "Price": 156.08,
+    "Price": 156.73,
     "EPS": 3.1,
     "PE Ratio": 50.01,
     "PEG Ratio": 1.913,
@@ -73,7 +73,7 @@
   },
   {
     "Ticker": "TSLA",
-    "Price": 319.35,
+    "Price": 321.64,
     "EPS": 1.76,
     "PE Ratio": 185.1,
     "PEG Ratio": 6.02,
@@ -85,7 +85,7 @@
   },
   {
     "Ticker": "SPY",
-    "Price": 611.72,
+    "Price": 612.68,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -97,7 +97,7 @@
   },
   {
     "Ticker": "QQQ",
-    "Price": 545.475,
+    "Price": null,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -109,7 +109,7 @@
   },
   {
     "Ticker": "MGC",
-    "Price": 223.16,
+    "Price": null,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -121,7 +121,7 @@
   },
   {
     "Ticker": "IEFA",
-    "Price": 83.005,
+    "Price": null,
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
