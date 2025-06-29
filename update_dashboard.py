@@ -38,6 +38,7 @@ TICKERS = [
 BASE_TI_URL = "https://api.tiingo.com"
 BASE_AV_URL = "https://www.alphavantage.co/query"
 HISTORICAL_FILE = "historical_prices.json"
+FUNDAMENTALS_FILE = "fundamentals_history.json"
 DASHBOARD_FILE = "ticker_dashboard_data.json"
 
 # ─── Step 3: Utility ───────────────────────────────────────────────────────────
@@ -48,16 +49,19 @@ def safe_float(val):
     except (TypeError, ValueError):
         return None
 
+def today_date_str():
+    return datetime.today().strftime("%Y-%m-%d")
+
 # ─── Step 4: Historical Price Store ────────────────────────────────────────────
 
-def load_historical_prices():
-    if os.path.exists(HISTORICAL_FILE):
-        with open(HISTORICAL_FILE, "r") as f:
+def load_json_file(path):
+    if os.path.exists(path):
+        with open(path, "r") as f:
             return json.load(f)
     return {}
 
-def save_historical_prices(data):
-    with open(HISTORICAL_FILE, "w") as f:
+def save_json_file(path, data):
+    with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
 # ─── Step 5: Fetch Historical Backfill ─────────────────────────────────────────
@@ -100,10 +104,10 @@ def fetch_latest_close(ticker):
         print(f"Tiingo latest price error for {ticker}: {e}")
         return None
 
-# ─── Step 7: Update Historical Data ────────────────────────────────────────────
+# ─── Step 7: Update Historical Prices ──────────────────────────────────────────
 
 def update_historical_prices(historical):
-    today_str = datetime.today().strftime("%Y-%m-%d")
+    today_str = today_date_str()
     updated = False
 
     for ticker in TICKERS:
@@ -166,21 +170,24 @@ def fetch_fundamentals_from_av(ticker):
             "Forward PE": None,
         }
 
-# ─── Step 10: Fetch All Data ───────────────────────────────────────────────────
+# ─── Step 10: Fetch and Store All Data ─────────────────────────────────────────
 
 def fetch_data():
     dashboard_data = []
-    historical = load_historical_prices()
+    today_str = today_date_str()
 
-    if update_historical_prices(historical):
+    historical_prices = load_json_file(HISTORICAL_FILE)
+    fundamentals_history = load_json_file(FUNDAMENTALS_FILE)
+
+    if update_historical_prices(historical_prices):
         print("Historical prices updated.")
-        save_historical_prices(historical)
+        save_json_file(HISTORICAL_FILE, historical_prices)
     else:
         print("No new price data needed today.")
 
     for ticker in TICKERS:
         print(f"Processing {ticker}...")
-        series = historical.get(ticker, [])
+        series = historical_prices.get(ticker, [])
         series_sorted = sorted(series)
         price = series_sorted[-1][1] if series_sorted else None
 
@@ -189,9 +196,9 @@ def fetch_data():
 
         fundamentals = fetch_fundamentals_from_av(ticker)
 
-        row = {
-            "Ticker": ticker,
-            "Price": price,
+        # Create today's fundamentals record
+        today_fundamentals = {
+            "date": today_str,
             "EPS": fundamentals["EPS"],
             "PE Ratio": fundamentals["PE Ratio"],
             "PEG Ratio": fundamentals["PEG Ratio"],
@@ -202,7 +209,23 @@ def fetch_data():
             "Approx Sharpe Ratio": sharpe
         }
 
+        # Append to history if new
+        history_series = fundamentals_history.get(ticker, [])
+        if not any(entry.get("date") == today_str for entry in history_series):
+            history_series.append(today_fundamentals)
+            fundamentals_history[ticker] = history_series
+
+        # Add to dashboard
+        row = {
+            "Ticker": ticker,
+            "Price": price,
+            **today_fundamentals
+        }
+
         dashboard_data.append(row)
+
+    # Save updated fundamentals history
+    save_json_file(FUNDAMENTALS_FILE, fundamentals_history)
 
     return dashboard_data
 
@@ -211,8 +234,7 @@ def fetch_data():
 if __name__ == "__main__":
     data = fetch_data()
     if data:
-        with open(DASHBOARD_FILE, "w") as f:
-            json.dump(data, f, indent=2)
+        save_json_file(DASHBOARD_FILE, data)
         print("Dashboard data updated.")
     else:
         print("No data to write.")
