@@ -1,99 +1,226 @@
-<script>
-  // fix: defer dashboard script until DOM is loaded to prevent null errors
-  document.addEventListener("DOMContentLoaded", function() {
-    function formatValueAndClass(key, value) {
-      let text = "–";
-      let cssClass = "neutral";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Dashboard</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #000;
+      color: #fff;
+      padding: 2em;
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc00;
+    }
+    #last-updated {
+      text-align: center;
+      font-size: 0.9em;
+      color: #ccc;
+      margin-bottom: 1em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2em;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.5em;
+      text-align: center;
+      background-color: #111;
+    }
+    th {
+      background-color: #111;
+      cursor: pointer;
+      user-select: none;
+    }
+    th.sort-asc::after {
+      content: " \25B2";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
+    }
+    th.sort-desc::after {
+      content: " \25BC";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
+    }
+    .positive {
+      color: #00ff00;
+    }
+    .negative {
+      color: #ff3333;
+    }
+    .neutral {
+      color: #cccccc;
+    }
+    .definitions {
+      font-size: 0.95em;
+      max-width: 800px;
+      margin: auto;
+    }
+    .definitions p {
+      margin: 0.5em 0;
+    }
+    .definitions code {
+      background: #222;
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Stock Performance Dashboard</h1>
+  <div id="last-updated"></div>
+  <table id="dashboard-table">
+    <thead>
+      <tr>
+        <th data-col="Ticker">Ticker</th>
+        <th data-col="Price">Price</th>
+        <th data-col="EPS">EPS</th>
+        <th data-col="PE Ratio">PE Ratio</th>
+        <th data-col="PEG Ratio">PEG Ratio</th>
+        <th data-col="Forward PE">Forward PE</th>
+        <th data-col="Price to FCF">Price to FCF</th>
+        <th data-col="1Y Return">1Y Return</th>
+        <th data-col="1Y Volatility">1Y Volatility</th>
+        <th data-col="Approx Sharpe Ratio">Approx Sharpe Ratio</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-      if (value !== null && value !== undefined && !isNaN(value)) {
-        switch (key) {
-          case "Price":
-          case "EPS":
-            text = `$${value.toFixed(2)}`;
-            break;
-          case "PE Ratio":
-          case "PEG Ratio":
-          case "Forward PE":
-          case "Price to FCF":
-          case "Approx Sharpe Ratio":
-            text = value.toFixed(2);
-            cssClass = value >= 0 ? "positive" : "negative";
-            break;
-          case "1Y Return":
-          case "1Y Volatility":
-            const pct = (value * 100).toFixed(1);
-            text = `${value >= 0 ? "+" : ""}${pct}%`;
-            cssClass = value >= 0 ? "positive" : "negative";
-            break;
-          default:
-            text = value;
-            break;
+  <div class="definitions">
+    <h2>Metric Definitions</h2>
+    <p><strong>Price:</strong> Current stock price.</p>
+    <p><strong>EPS (Trailing):</strong> Earnings per share over the past 12 months. <code>EPS = Net Income / Shares Outstanding</code></p>
+    <p><strong>PE Ratio (Trailing):</strong> Price divided by trailing EPS. <code>PE = Price / EPS</code></p>
+    <p><strong>PEG Ratio:</strong> PE divided by expected earnings growth rate. <code>PEG = PE / Growth Rate</code></p>
+    <p><strong>Forward PE:</strong> Price divided by forecasted next-year EPS.</p>
+    <p><strong>Price to FCF:</strong> Price relative to free cash flow. <code>Price to FCF = Market Cap / Free Cash Flow</code></p>
+    <p><strong>1Y Return:</strong> Price change over the past year. <code>Return = (Price_today - Price_1yr_ago) / Price_1yr_ago</code></p>
+    <p><strong>1Y Volatility:</strong> Annualized standard deviation of daily returns.</p>
+    <p><strong>Approx Sharpe Ratio:</strong> Return divided by volatility. <code>Sharpe ≈ Return / Volatility</code></p>
+  </div>
+
+  <script>
+    // fix: defer dashboard script until DOM is loaded to prevent null errors
+    document.addEventListener("DOMContentLoaded", function() {
+      function formatValueAndClass(key, value) {
+        let text = "–";
+        let cssClass = "neutral";
+
+        if (value !== null && value !== undefined && !isNaN(value)) {
+          switch (key) {
+            case "Price":
+            case "EPS":
+              text = `$${value.toFixed(2)}`;
+              break;
+            case "PE Ratio":
+            case "PEG Ratio":
+            case "Forward PE":
+            case "Price to FCF":
+            case "Approx Sharpe Ratio":
+              text = value.toFixed(2);
+              cssClass = value >= 0 ? "positive" : "negative";
+              break;
+            case "1Y Return":
+            case "1Y Volatility":
+              const pct = (value * 100).toFixed(1);
+              text = `${value >= 0 ? "+" : ""}${pct}%`;
+              cssClass = value >= 0 ? "positive" : "negative";
+              break;
+            default:
+              text = value;
+              break;
+          }
+        }
+
+        return { text, cssClass };
+      }
+
+      function updateTimestamp() {
+        const now = new Date();
+        const el = document.getElementById("last-updated");
+        if (el) {
+          el.textContent = `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
         }
       }
 
-      return { text, cssClass };
-    }
+      fetch("ticker_dashboard_data.json")
+        .then(response => {
+          if (!response.ok) throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
+          return response.json();
+        })
+        .then(data => {
+          populateDashboard(data);
+          updateTimestamp();
+        })
+        .catch(error => {
+          console.error("Error fetching or parsing JSON data:", error);
+          const table = document.getElementById("dashboard-table");
+          if (table) {
+            const tbody = table.getElementsByTagName("tbody")[0];
+            const row = tbody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 10;
+            cell.innerText = "⚠️ Failed to load stock data.";
+            cell.style.color = "red";
+          }
+        });
 
-    function updateTimestamp() {
-      const now = new Date();
-      const el = document.getElementById("last-updated");
-      if (el) {
-        el.textContent = `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-      }
-    }
-
-    fetch("ticker_dashboard_data.json")
-      .then(response => {
-        if (!response.ok) throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
-        return response.json();
-      })
-      .then(data => {
-        populateDashboard(data);
-        updateTimestamp();
-      })
-      .catch(error => {
-        console.error("Error fetching or parsing JSON data:", error);
+      function populateDashboard(data) {
         const table = document.getElementById("dashboard-table");
-        if (table) {
-          const tbody = table.getElementsByTagName("tbody")[0];
-          const row = tbody.insertRow();
-          const cell = row.insertCell();
-          cell.colSpan = 10;
-          cell.innerText = "⚠️ Failed to load stock data.";
-          cell.style.color = "red";
-        }
-      });
+        if (!table) return;
+        const tableBody = table.getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = "";
 
-    function populateDashboard(data) {
-      const table = document.getElementById("dashboard-table");
-      if (!table) return;
-      const tableBody = table.getElementsByTagName("tbody")[0];
-      tableBody.innerHTML = "";
+        data.forEach(entry => {
+          const row = tableBody.insertRow();
+          [
+            "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
+            "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
+          ].forEach(key => {
+            const cell = row.insertCell();
+            const { text, cssClass } = formatValueAndClass(key, entry[key]);
+            cell.textContent = text;
+            cell.classList.add(cssClass);
+          });
+        });
+      }
 
-      data.forEach(entry => {
-        const row = tableBody.insertRow();
-        [
-          "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
-          "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
-        ].forEach(key => {
-          const cell = row.insertCell();
-          const { text, cssClass } = formatValueAndClass(key, entry[key]);
-          cell.textContent = text;
-          cell.classList.add(cssClass);
+      document.querySelectorAll("th").forEach(th => {
+        th.addEventListener("click", () => {
+          const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+          const rows = Array.from(tableBody.rows);
+          const isAsc = !th.classList.contains("sort-asc");
+
+          document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
+          th.classList.add(isAsc ? "sort-asc" : "sort-desc");
+
+          rows.sort((a, b) => {
+            const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+            const valB = b.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+            const numA = parseFloat(valA);
+            const numB = parseFloat(valB);
+            return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
+          });
+
+          rows.forEach(row => tableBody.appendChild(row));
         });
       });
-    }
 
-    document.querySelectorAll("th").forEach(th => {
-      th.addEventListener("click", () => {
-        const col = th.getAttribute("data-col");
-        const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
-        const rows = Array.from(tableBody.rows);
-        const isAsc = !th.classList.contains("sort-asc");
-
-        document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
-        th.classList.add(isAsc ? "sort-asc" : "sort-desc");
-
-        rows.sort((a, b) => {
-          const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
-          const valB = b.cells[th.cellIndex].textContent
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 300000);
+    });
+  </script>
+</body>
+</html>
