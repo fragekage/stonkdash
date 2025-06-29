@@ -113,7 +113,12 @@
   <script>
     // fix: defer dashboard script until DOM is loaded to prevent null errors
     document.addEventListener("DOMContentLoaded", function() {
+      // ✅ FIXED: ensure Ticker column always shows text value
       function formatValueAndClass(key, value) {
+        if (key === "Ticker") {
+          return { text: value ?? "–", cssClass: "neutral" };
+        }
+
         let text = "–";
         let cssClass = "neutral";
 
