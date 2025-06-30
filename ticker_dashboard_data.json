@@ -2,6 +2,7 @@
   {
     "Ticker": "AAPL",
     "Price": 201.08,
+    "date": "2025-06-30",
     "EPS": 6.41,
     "PE Ratio": 31.37,
     "PEG Ratio": 1.833,
@@ -14,6 +15,7 @@
   {
     "Ticker": "MSFT",
     "Price": 495.94,
+    "date": "2025-06-30",
     "EPS": 12.94,
     "PE Ratio": 38.33,
     "PEG Ratio": 2.326,
@@ -26,6 +28,7 @@
   {
     "Ticker": "GOOGL",
     "Price": 178.53,
+    "date": "2025-06-30",
     "EPS": 8.96,
     "PE Ratio": 19.93,
     "PEG Ratio": 1.368,
@@ -38,6 +41,7 @@
   {
     "Ticker": "AMZN",
     "Price": 223.3,
+    "date": "2025-06-30",
     "EPS": 6.14,
     "PE Ratio": 36.37,
     "PEG Ratio": 2.883,
@@ -50,6 +54,7 @@
   {
     "Ticker": "META",
     "Price": 733.63,
+    "date": "2025-06-30",
     "EPS": 25.6,
     "PE Ratio": 28.66,
     "PEG Ratio": 2.414,
@@ -62,6 +67,7 @@
   {
     "Ticker": "NVDA",
     "Price": 157.75,
+    "date": "2025-06-30",
     "EPS": 3.11,
     "PE Ratio": 50.72,
     "PEG Ratio": 1.956,
@@ -74,8 +80,9 @@
   {
     "Ticker": "TSLA",
     "Price": 323.63,
+    "date": "2025-06-30",
     "EPS": 1.75,
-    "PE Ratio": 184.93,
+    "PE Ratio": 185.02,
     "PEG Ratio": 5.98,
     "Forward PE": 166.67,
     "Price to FCF": null,
@@ -86,6 +93,7 @@
   {
     "Ticker": "SPY",
     "Price": 614.91,
+    "date": "2025-06-30",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -98,6 +106,7 @@
   {
     "Ticker": "QQQ",
     "Price": 548.09,
+    "date": "2025-06-30",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -110,6 +119,7 @@
   {
     "Ticker": "MGC",
     "Price": 224.22,
+    "date": "2025-06-30",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -122,6 +132,7 @@
   {
     "Ticker": "IEFA",
     "Price": 83.31,
+    "date": "2025-06-30",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -134,6 +145,7 @@
   {
     "Ticker": "NEE",
     "Price": 70.89,
+    "date": "2025-06-30",
     "EPS": 2.67,
     "PE Ratio": 26.55,
     "PEG Ratio": 2.683,
@@ -146,6 +158,7 @@
   {
     "Ticker": "D",
     "Price": 55.87,
+    "date": "2025-06-30",
     "EPS": 2.59,
     "PE Ratio": 21.57,
     "PEG Ratio": 2.092,
@@ -157,7 +170,8 @@
   },
   {
     "Ticker": "CRWV",
-    "Price": 159.99,
+    "Price": null,
+    "date": "2025-06-30",
     "EPS": -2.53,
     "PE Ratio": null,
     "PEG Ratio": null,
