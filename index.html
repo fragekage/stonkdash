@@ -47,23 +47,15 @@
       color: #ffcc00;
       animation: pulse 0.3s ease-in-out;
     }
-    .positive {
-      color: #00ff00;
-    }
-    .negative {
-      color: #ff3333;
-    }
-    .neutral {
-      color: #cccccc;
-    }
+    .positive { color: #00ff00; }
+    .negative { color: #ff3333; }
+    .neutral { color: #cccccc; }
     .definitions {
       font-size: 0.95em;
       max-width: 800px;
       margin: auto;
     }
-    .definitions p {
-      margin: 0.5em 0;
-    }
+    .definitions p { margin: 0.5em 0; }
     .definitions code {
       background: #222;
       padding: 0.1em 0.3em;
@@ -111,17 +103,21 @@
   </div>
 
   <script>
-    // fix: defer dashboard script until DOM is loaded to prevent null errors
+    // ✅ NEW: Global error catchers to reveal errors on iPad
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("JS Error: " + message + "\nLine: " + lineno + "\n" + (error ? error.stack : ""));
+    };
+    window.addEventListener("unhandledrejection", function(event) {
+      alert("Unhandled promise rejection: " + event.reason);
+    });
+
     document.addEventListener("DOMContentLoaded", function() {
-      // ✅ FIXED: ensure Ticker column always shows text value
       function formatValueAndClass(key, value) {
         if (key === "Ticker") {
           return { text: value ?? "–", cssClass: "neutral" };
         }
-
         let text = "–";
         let cssClass = "neutral";
-
         if (value !== null && value !== undefined && !isNaN(value)) {
           switch (key) {
             case "Price":
@@ -147,7 +143,6 @@
               break;
           }
         }
-
         return { text, cssClass };
       }
 
@@ -161,15 +156,18 @@
 
       fetch("ticker_dashboard_data.json")
         .then(response => {
+          console.log("[FETCH] status:", response.status);
           if (!response.ok) throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
           return response.json();
         })
         .then(data => {
+          console.log("[FETCH] parsed JSON:", data);
           populateDashboard(data);
           updateTimestamp();
         })
         .catch(error => {
           console.error("Error fetching or parsing JSON data:", error);
+          alert("Error loading data: " + error);
           const table = document.getElementById("dashboard-table");
           if (table) {
             const tbody = table.getElementsByTagName("tbody")[0];
@@ -186,7 +184,6 @@
         if (!table) return;
         const tableBody = table.getElementsByTagName("tbody")[0];
         tableBody.innerHTML = "";
-
         data.forEach(entry => {
           const row = tableBody.insertRow();
           [
@@ -206,10 +203,8 @@
           const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
           const rows = Array.from(tableBody.rows);
           const isAsc = !th.classList.contains("sort-asc");
-
           document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
           th.classList.add(isAsc ? "sort-asc" : "sort-desc");
-
           rows.sort((a, b) => {
             const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
             const valB = b.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
@@ -217,7 +212,6 @@
             const numB = parseFloat(valB);
             return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
           });
-
           rows.forEach(row => tableBody.appendChild(row));
         });
       });
