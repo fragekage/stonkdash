@@ -103,7 +103,7 @@
 
   <div class="definitions">
     <h2>Metric Definitions</h2>
-    <p><strong>Price:</strong> Current stock price.</p>
+    <p><strong><a href="prices.html">Price</a>:</strong> Current stock price.</p>
     <p><strong>EPS (Trailing):</strong> Earnings per share over the past 12 months. <code>EPS = Net Income / Shares Outstanding</code></p>
     <p><strong>PE Ratio (Trailing):</strong> Price divided by trailing EPS. <code>PE = Price / EPS</code></p>
     <p><strong>PEG Ratio:</strong> PE divided by expected earnings growth rate. <code>PEG = PE / Growth Rate</code></p>
@@ -117,7 +117,6 @@
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       var debugEl = document.getElementById("debug-log");
-
       function logDebug(message) {
         if (console && console.log) console.log("[DEBUG]", message);
         if (debugEl) debugEl.textContent += "\n" + message;
@@ -176,7 +175,6 @@
         }
         var tableBody = table.getElementsByTagName("tbody")[0];
         tableBody.innerHTML = "";
-
         for (var i = 0; i < data.length; i++) {
           var entry = data[i];
           var row = tableBody.insertRow();
@@ -239,12 +237,10 @@
           var tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
           var rows = Array.prototype.slice.call(tableBody.rows);
           var isAsc = !this.classList.contains("sort-asc");
-
           for (var k = 0; k < headers.length; k++) {
             headers[k].classList.remove("sort-asc", "sort-desc");
           }
           this.classList.add(isAsc ? "sort-asc" : "sort-desc");
-
           rows.sort(function(a, b) {
             var valA = a.cells[this.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
             var valB = b.cells[this.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
@@ -252,7 +248,6 @@
             var numB = parseFloat(valB);
             return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
           }.bind(this));
-
           for (var l = 0; l < rows.length; l++) {
             tableBody.appendChild(rows[l]);
           }
