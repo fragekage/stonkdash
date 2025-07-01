@@ -15,6 +15,16 @@
       text-align: center;
       color: #ffcc00;
     }
+    #debug-log {
+      white-space: pre-wrap;
+      color: #ffcc00;
+      background: #111;
+      padding: 1em;
+      overflow: auto;
+      max-height: 200px;
+      margin-bottom: 1em;
+      border: 1px solid #444;
+    }
     #last-updated {
       text-align: center;
       font-size: 0.9em;
@@ -78,6 +88,7 @@
 </head>
 <body>
   <h1>Stock Performance Dashboard</h1>
+  <pre id="debug-log">Loading debug log...</pre>
   <div id="last-updated"></div>
   <table id="dashboard-table">
     <thead>
@@ -110,13 +121,8 @@
     <p><strong>Approx Sharpe Ratio:</strong> Return divided by volatility. <code>Sharpe ≈ Return / Volatility</code></p>
   </div>
 
-  <!-- ✅ Moved script here so the table DOM is guaranteed to exist -->
   <script>
-    const debugEl = document.createElement("pre");
-    debugEl.id = "debug-log";
-    debugEl.style.color = "#ffcc00";
-    document.body.appendChild(debugEl);
-
+    const debugEl = document.getElementById("debug-log");
     function logDebug(message) {
       console.log("[DEBUG]", message);
       debugEl.textContent += `\n${message}`;
@@ -131,6 +137,11 @@
       alert(`Unhandled promise rejection:\n${event.reason}`);
       logDebug(`Unhandled rejection: ${event.reason}`);
     });
+
+    const EXPECTED_COLUMNS = [
+      "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
+      "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
+    ];
 
     function formatValueAndClass(key, value) {
       if (key === "Ticker") {
@@ -189,10 +200,7 @@
 
       data.forEach(entry => {
         const row = tableBody.insertRow();
-        [
-          "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
-          "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
-        ].forEach(key => {
+        EXPECTED_COLUMNS.forEach(key => {
           const cell = row.insertCell();
           const { text, cssClass } = formatValueAndClass(key, entry[key]);
           cell.textContent = text;
