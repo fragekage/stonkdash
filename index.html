@@ -57,23 +57,15 @@
       color: #ffcc00;
       animation: pulse 0.3s ease-in-out;
     }
-    .positive {
-      color: #00ff00;
-    }
-    .negative {
-      color: #ff3333;
-    }
-    .neutral {
-      color: #cccccc;
-    }
+    .positive { color: #00ff00; }
+    .negative { color: #ff3333; }
+    .neutral  { color: #cccccc; }
     .definitions {
       font-size: 0.95em;
       max-width: 800px;
       margin: auto;
     }
-    .definitions p {
-      margin: 0.5em 0;
-    }
+    .definitions p { margin: 0.5em 0; }
     .definitions code {
       background: #222;
       padding: 0.1em 0.3em;
@@ -122,149 +114,148 @@
   </div>
 
   <script>
-    const debugEl = document.getElementById("debug-log");
-    function logDebug(message) {
-      console.log("[DEBUG]", message);
-      debugEl.textContent += `\n${message}`;
-    }
-
-    window.onerror = function (msg, url, line, col, error) {
-      alert(`JS Error:\n${msg}\nLine: ${line}\nColumn: ${col}\n${error}`);
-      logDebug(`JS Error: ${msg} at ${line}:${col}`);
-    };
-
-    window.addEventListener("unhandledrejection", event => {
-      alert(`Unhandled promise rejection:\n${event.reason}`);
-      logDebug(`Unhandled rejection: ${event.reason}`);
-    });
-
-    const EXPECTED_COLUMNS = [
-      "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
-      "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
-    ];
-
-    function formatValueAndClass(key, value) {
-      if (key === "Ticker") {
-        return { text: value ?? "–", cssClass: "neutral" };
+    document.addEventListener("DOMContentLoaded", function() {
+      const debugEl = document.getElementById("debug-log");
+      function logDebug(message) {
+        console.log("[DEBUG]", message);
+        if (debugEl) debugEl.textContent += `\n${message}`;
       }
 
-      let text = "–";
-      let cssClass = "neutral";
+      window.onerror = function (msg, url, line, col, error) {
+        alert(`JS Error:\n${msg}\nLine: ${line}\nColumn: ${col}\n${error}`);
+        logDebug(`JS Error: ${msg} at ${line}:${col}`);
+      };
 
-      if (value !== null && value !== undefined && !isNaN(value)) {
-        switch (key) {
-          case "Price":
-          case "EPS":
-            text = `$${value.toFixed(2)}`;
-            break;
-          case "PE Ratio":
-          case "PEG Ratio":
-          case "Forward PE":
-          case "Price to FCF":
-          case "Approx Sharpe Ratio":
-            text = value.toFixed(2);
-            cssClass = value >= 0 ? "positive" : "negative";
-            break;
-          case "1Y Return":
-          case "1Y Volatility":
-            const pct = (value * 100).toFixed(1);
-            text = `${value >= 0 ? "+" : ""}${pct}%`;
-            cssClass = value >= 0 ? "positive" : "negative";
-            break;
-          default:
-            text = value;
-            break;
-        }
-      }
-
-      return { text, cssClass };
-    }
-
-    function updateTimestamp() {
-      const now = new Date();
-      const el = document.getElementById("last-updated");
-      if (el) {
-        el.textContent = `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-      }
-    }
-
-    function populateDashboard(data) {
-      logDebug(`Populating dashboard with ${data.length} items`);
-      const table = document.getElementById("dashboard-table");
-      if (!table) {
-        logDebug("⚠️ Table element not found!");
-        return;
-      }
-      const tableBody = table.getElementsByTagName("tbody")[0];
-      tableBody.innerHTML = "";
-
-      data.forEach(entry => {
-        const row = tableBody.insertRow();
-        EXPECTED_COLUMNS.forEach(key => {
-          const cell = row.insertCell();
-          const { text, cssClass } = formatValueAndClass(key, entry[key]);
-          cell.textContent = text;
-          cell.classList.add(cssClass);
-        });
+      window.addEventListener("unhandledrejection", event => {
+        alert(`Unhandled promise rejection:\n${event.reason}`);
+        logDebug(`Unhandled rejection: ${event.reason}`);
       });
-    }
 
-    fetch("ticker_dashboard_data.json")
-      .then(response => {
-        logDebug(`Fetch response status: ${response.status}`);
-        if (!response.ok) throw new Error(`Failed to load JSON (${response.status} ${response.statusText})`);
-        return response.json();
-      })
-      .then(data => {
-        logDebug(`Fetched JSON length: ${data.length}`);
-        logDebug(`First item: ${JSON.stringify(data[0])}`);
-        if (!Array.isArray(data) || data.length === 0) {
-          logDebug("⚠️ JSON data is empty or not an array!");
-          alert("⚠️ Stock data appears empty. Check backend!");
+      const EXPECTED_COLUMNS = [
+        "Ticker", "Price", "EPS", "PE Ratio", "PEG Ratio",
+        "Forward PE", "Price to FCF", "1Y Return", "1Y Volatility", "Approx Sharpe Ratio"
+      ];
+
+      function formatValueAndClass(key, value) {
+        if (key === "Ticker") {
+          return { text: value ?? "–", cssClass: "neutral" };
+        }
+        let text = "–", cssClass = "neutral";
+        if (value !== null && value !== undefined && !isNaN(value)) {
+          switch (key) {
+            case "Price":
+            case "EPS": text = `$${value.toFixed(2)}`; break;
+            case "PE Ratio":
+            case "PEG Ratio":
+            case "Forward PE":
+            case "Price to FCF":
+            case "Approx Sharpe Ratio":
+              text = value.toFixed(2);
+              cssClass = value >= 0 ? "positive" : "negative";
+              break;
+            case "1Y Return":
+            case "1Y Volatility":
+              const pct = (value * 100).toFixed(1);
+              text = `${value >= 0 ? "+" : ""}${pct}%`;
+              cssClass = value >= 0 ? "positive" : "negative";
+              break;
+            default:
+              text = value;
+          }
+        }
+        return { text, cssClass };
+      }
+
+      function updateTimestamp() {
+        const now = new Date();
+        const el = document.getElementById("last-updated");
+        if (el) el.textContent = `Last updated: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+      }
+
+      function populateDashboard(data) {
+        logDebug(`Populating dashboard with ${data.length} items`);
+        const table = document.getElementById("dashboard-table");
+        if (!table) {
+          logDebug("⚠️ Table element not found!");
           return;
         }
-        populateDashboard(data);
-        updateTimestamp();
-      })
-      .catch(error => {
-        console.error("Error fetching or parsing JSON data:", error);
-        logDebug(`❌ Error: ${error}`);
-        alert(`⚠️ Error loading stock data:\n${error}`);
-        const table = document.getElementById("dashboard-table");
-        if (table) {
-          const tbody = table.getElementsByTagName("tbody")[0];
-          const row = tbody.insertRow();
-          const cell = row.insertCell();
-          cell.colSpan = 10;
-          cell.innerText = "⚠️ Failed to load stock data.";
-          cell.style.color = "red";
-        }
-      });
-
-    document.querySelectorAll("th").forEach(th => {
-      th.addEventListener("click", () => {
-        const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
-        const rows = Array.from(tableBody.rows);
-        const isAsc = !th.classList.contains("sort-asc");
-
-        document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
-        th.classList.add(isAsc ? "sort-asc" : "sort-desc");
-
-        rows.sort((a, b) => {
-          const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
-          const valB = b.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
-          const numA = parseFloat(valA);
-          const numB = parseFloat(valB);
-          return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
+        const tableBody = table.getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = "";
+        data.forEach(entry => {
+          const row = tableBody.insertRow();
+          EXPECTED_COLUMNS.forEach(key => {
+            const cell = row.insertCell();
+            const { text, cssClass } = formatValueAndClass(key, entry[key]);
+            cell.textContent = text;
+            cell.classList.add(cssClass);
+          });
         });
+      }
 
-        rows.forEach(row => tableBody.appendChild(row));
+      // --- New XMLHttpRequest-based fetch for better cross-device compatibility ---
+      function loadJSON() {
+        try {
+          logDebug("Using XMLHttpRequest to load ticker_dashboard_data.json");
+          const xhr = new XMLHttpRequest();
+          xhr.open("GET", "ticker_dashboard_data.json", true);
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+              logDebug(`XHR status: ${xhr.status}`);
+              if (xhr.status === 200) {
+                try {
+                  const data = JSON.parse(xhr.responseText);
+                  logDebug(`Parsed JSON length: ${data.length}`);
+                  logDebug(`First item: ${JSON.stringify(data[0])}`);
+                  if (!Array.isArray(data) || data.length === 0) {
+                    logDebug("⚠️ JSON data is empty or not an array!");
+                    alert("⚠️ Stock data appears empty. Check backend!");
+                    return;
+                  }
+                  populateDashboard(data);
+                  updateTimestamp();
+                } catch (e) {
+                  logDebug(`❌ JSON parse error: ${e}`);
+                  alert(`⚠️ Error parsing stock data:\n${e}`);
+                }
+              } else {
+                logDebug(`❌ Failed to load JSON: HTTP ${xhr.status}`);
+                alert(`⚠️ Error loading stock data: HTTP ${xhr.status}`);
+              }
+            }
+          };
+          xhr.onerror = function() {
+            logDebug("❌ XMLHttpRequest network error");
+            alert("⚠️ Network error loading stock data");
+          };
+          xhr.send();
+        } catch (err) {
+          logDebug(`❌ Exception in loadJSON: ${err}`);
+          alert(`⚠️ Exception loading stock data:\n${err}`);
+        }
+      }
+
+      loadJSON();
+
+      document.querySelectorAll("th").forEach(th => {
+        th.addEventListener("click", () => {
+          const tableBody = document.getElementById("dashboard-table").getElementsByTagName("tbody")[0];
+          const rows = Array.from(tableBody.rows);
+          const isAsc = !th.classList.contains("sort-asc");
+          document.querySelectorAll("th").forEach(th2 => th2.classList.remove("sort-asc", "sort-desc"));
+          th.classList.add(isAsc ? "sort-asc" : "sort-desc");
+          rows.sort((a, b) => {
+            const valA = a.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+            const valB = b.cells[th.cellIndex].textContent.replace(/[^0-9.\-]/g, "");
+            const numA = parseFloat(valA);
+            const numB = parseFloat(valB);
+            return (isNaN(numA) || isNaN(numB)) ? 0 : (isAsc ? numA - numB : numB - numA);
+          });
+          rows.forEach(row => tableBody.appendChild(row));
+        });
       });
-    });
 
-    setTimeout(() => {
-      window.location.reload(true);
-    }, 300000);
+      setTimeout(() => window.location.reload(true), 300000);
+    });
   </script>
 </body>
 </html>
