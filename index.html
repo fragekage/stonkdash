@@ -1,5 +1,117 @@
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Dashboard</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #000;
+      color: #fff;
+      padding: 2em;
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc00;
+    }
+    #last-updated {
+      text-align: center;
+      font-size: 0.9em;
+      color: #ccc;
+      margin-bottom: 1em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2em;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 0.5em;
+      text-align: center;
+      background-color: #111;
+    }
+    th {
+      background-color: #111;
+      cursor: pointer;
+      user-select: none;
+    }
+    th.sort-asc::after {
+      content: " \25B2";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
+    }
+    th.sort-desc::after {
+      content: " \25BC";
+      color: #ffcc00;
+      animation: pulse 0.3s ease-in-out;
+    }
+    .positive {
+      color: #00ff00;
+    }
+    .negative {
+      color: #ff3333;
+    }
+    .neutral {
+      color: #cccccc;
+    }
+    .definitions {
+      font-size: 0.95em;
+      max-width: 800px;
+      margin: auto;
+    }
+    .definitions p {
+      margin: 0.5em 0;
+    }
+    .definitions code {
+      background: #222;
+      padding: 0.1em 0.3em;
+      border-radius: 3px;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.5; }
+      50% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Stock Performance Dashboard</h1>
+  <div id="last-updated"></div>
+  <table id="dashboard-table">
+    <thead>
+      <tr>
+        <th data-col="Ticker">Ticker</th>
+        <th data-col="Price">Price</th>
+        <th data-col="EPS">EPS</th>
+        <th data-col="PE Ratio">PE Ratio</th>
+        <th data-col="PEG Ratio">PEG Ratio</th>
+        <th data-col="Forward PE">Forward PE</th>
+        <th data-col="Price to FCF">Price to FCF</th>
+        <th data-col="1Y Return">1Y Return</th>
+        <th data-col="1Y Volatility">1Y Volatility</th>
+        <th data-col="Approx Sharpe Ratio">Approx Sharpe Ratio</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="definitions">
+    <h2>Metric Definitions</h2>
+    <p><strong>Price:</strong> Current stock price.</p>
+    <p><strong>EPS (Trailing):</strong> Earnings per share over the past 12 months. <code>EPS = Net Income / Shares Outstanding</code></p>
+    <p><strong>PE Ratio (Trailing):</strong> Price divided by trailing EPS. <code>PE = Price / EPS</code></p>
+    <p><strong>PEG Ratio:</strong> PE divided by expected earnings growth rate. <code>PEG = PE / Growth Rate</code></p>
+    <p><strong>Forward PE:</strong> Price divided by forecasted next-year EPS.</p>
+    <p><strong>Price to FCF:</strong> Price relative to free cash flow. <code>Price to FCF = Market Cap / Free Cash Flow</code></p>
+    <p><strong>1Y Return:</strong> Price change over the past year. <code>Return = (Price_today - Price_1yr_ago) / Price_1yr_ago</code></p>
+    <p><strong>1Y Volatility:</strong> Annualized standard deviation of daily returns.</p>
+    <p><strong>Approx Sharpe Ratio:</strong> Return divided by volatility. <code>Sharpe ≈ Return / Volatility</code></p>
+  </div>
+
+  <!-- ✅ Moved script here so the table DOM is guaranteed to exist -->
+  <script>
     const debugEl = document.createElement("pre");
     debugEl.id = "debug-log";
     debugEl.style.color = "#ffcc00";
@@ -145,5 +257,6 @@
     setTimeout(() => {
       window.location.reload(true);
     }, 300000);
-  });
-</script>
+  </script>
+</body>
+</html>
