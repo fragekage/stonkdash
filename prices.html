@@ -33,8 +33,8 @@
       border: 1px solid #444;
       display: block;
       margin: 2em auto;
-      max-width: 90vw;
-      max-height: 80vh;
+      width: 90vw;
+      height: 60vh;
     }
     a {
       color: #ffcc00;
@@ -112,7 +112,7 @@
         const series = priceData[ticker].sort((a,b) => a[0].localeCompare(b[0]));
         return {
           label: ticker,
-          data: series.map(([date, price]) => ({ x: date, y: price })),
+          data: series.map(([date, price]) => ({ x: new Date(date + 'T00:00:00Z'), y: price })),
           borderColor: COLORS[idx % COLORS.length],
           backgroundColor: COLORS[idx % COLORS.length],
           fill: false,
