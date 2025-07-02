@@ -55,16 +55,17 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
   <script>
     const COLORS = [
-      '#00ff00',  // Bloomberg green
-      '#ff3333',  // Bloomberg red
-      '#ffcc00',  // Bloomberg yellow
-      '#33ccff',  // Bloomberg cyan
-      '#cc66ff',  // Bloomberg purple
-      '#ffaa00',  // Bloomberg orange
-      '#66ff66',  // light green
-      '#ff66b2'   // pinkish
+      '#00ff00',
+      '#ff3333',
+      '#ffcc00',
+      '#33ccff',
+      '#cc66ff',
+      '#ffaa00',
+      '#66ff66',
+      '#ff66b2'
     ];
 
     let priceData = {};
@@ -132,7 +133,7 @@
               type: 'time',
               time: {
                 unit: 'month',
-                tooltipFormat: 'YYYY-MM-DD'
+                tooltipFormat: 'yyyy-MM-dd'
               },
               title: {
                 display: true,
