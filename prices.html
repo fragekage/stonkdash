@@ -34,7 +34,7 @@
       display: block;
       margin: 2em auto;
       width: 90vw;
-      height: 60vh;
+      max-width: 1000px;
     }
     a {
       color: #ffcc00;
@@ -109,10 +109,13 @@
       if (selected.length === 0) return;
 
       const datasets = selected.map((ticker, idx) => {
-        const series = priceData[ticker].sort((a,b) => a[0].localeCompare(b[0]));
+        const series = priceData[ticker].sort((a, b) => a[0].localeCompare(b[0]));
         return {
           label: ticker,
-          data: series.map(([date, price]) => ({ x: new Date(date + 'T00:00:00Z'), y: price })),
+          data: series.map(([date, price]) => {
+            const [y, m, d] = date.split('-').map(Number);
+            return { x: new Date(Date.UTC(y, m - 1, d)), y: price };
+          }),
           borderColor: COLORS[idx % COLORS.length],
           backgroundColor: COLORS[idx % COLORS.length],
           fill: false,
@@ -127,11 +130,13 @@
         data: { datasets },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
+          aspectRatio: 2,
           scales: {
             x: {
               type: 'time',
               time: {
+                parser: 'yyyy-MM-dd',
                 unit: 'month',
                 tooltipFormat: 'yyyy-MM-dd'
               },
