@@ -2,11 +2,11 @@
   {
     "Ticker": "AAPL",
     "Price": 201.08,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": 7.46,
-    "PE Ratio": 34.85,
-    "PEG Ratio": 2.642,
-    "Forward PE": 31.45,
+    "PE Ratio": 34.61,
+    "PEG Ratio": 2.631,
+    "Forward PE": 31.35,
     "Price to FCF": null,
     "1Y Return": -0.07229527104959625,
     "1Y Volatility": 0.3205556597821578,
@@ -15,7 +15,7 @@
   {
     "Ticker": "MSFT",
     "Price": 495.94,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -28,7 +28,7 @@
   {
     "Ticker": "GOOGL",
     "Price": 178.53,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -41,7 +41,7 @@
   {
     "Ticker": "AMZN",
     "Price": 223.3,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -54,7 +54,7 @@
   {
     "Ticker": "META",
     "Price": 733.63,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -67,7 +67,7 @@
   {
     "Ticker": "NVDA",
     "Price": 157.75,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -80,7 +80,7 @@
   {
     "Ticker": "TSLA",
     "Price": 323.63,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -93,7 +93,7 @@
   {
     "Ticker": "SPY",
     "Price": 614.91,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -106,7 +106,7 @@
   {
     "Ticker": "QQQ",
     "Price": 548.09,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -119,7 +119,7 @@
   {
     "Ticker": "MGC",
     "Price": 224.22,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -132,7 +132,7 @@
   {
     "Ticker": "IEFA",
     "Price": 83.31,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -145,7 +145,7 @@
   {
     "Ticker": "NEE",
     "Price": 70.89,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -158,7 +158,7 @@
   {
     "Ticker": "D",
     "Price": 55.87,
-    "date": "2026-01-15",
+    "date": "2026-01-16",
     "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
@@ -171,8 +171,8 @@
   {
     "Ticker": "CRWV",
     "Price": null,
-    "date": "2026-01-15",
-    "EPS": -2.53,
+    "date": "2026-01-16",
+    "EPS": null,
     "PE Ratio": null,
     "PEG Ratio": null,
     "Forward PE": null,
